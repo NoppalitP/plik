@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plik (พลิก) — สลับภาษาไทย-อังกฤษ และแก้คำผิดอัตโนมัติ ในพริบตา</title>
+  <meta name="description" content="Plik คือซอฟต์แวร์สลับแป้นพิมพ์ภาษาไทย-อังกฤษและแก้คำผิดอัตโนมัติบน Windows ด้วยเอนจิน CHA ความเร็วระดับ Sub-microsecond ทำงานออฟไลน์ 100%">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              300: '#6ee7b7',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            },
+            tech: {
+              bg: '#FFFFFF',
+              surface: '#F8FAFC',
+              border: '#E2E8F0',
+              text: '#0F172A',
+              muted: '#64748B'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Sukhumvit Set"', '"Segoe UI"', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace']
+          },
+          keyframes: {
+            flipIn: {
+              '0%': { transform: 'rotateX(-90deg)', opacity: '0' },
+              '100%': { transform: 'rotateX(0deg)', opacity: '1' }
+            },
+            pulseGlow: {
+              '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.05)' }
+            },
+            floatSlow: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' }
+            }
+          },
+          animation: {
+            flipIn: 'flipIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            pulseGlow: 'pulseGlow 3s ease-in-out infinite',
+            floatSlow: 'floatSlow 4s ease-in-out infinite'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .tech-grid {
+      background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F8FAFC;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+  </style>
+</head>
+<body class="bg-[#FFFFFF] text-tech-text font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- TOP ANNOUNCEMENT BAR -->
+  <aside aria-label="Announcement" class="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border-b border-emerald-100/80 py-2 px-4 text-center text-xs font-medium text-emerald-800 flex items-center justify-center gap-2">
+    <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white tracking-wide uppercase">New</span>
+    <span>Plik v1.0.0 เปิดตัวอย่างเป็นทางการ: สลับภาษาไทย-อังกฤษ + แก้คำผิดอัตโนมัติบน Windows ฟรี 100%</span>
+    <a href="#download" class="underline hover:text-emerald-900 font-semibold ml-1">ดาวน์โหลดเลย &rarr;</a>
+  </aside>
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3 group">
+        <img src="app_icon.png" alt="Plik Logo" class="w-9 h-9 rounded-xl shadow-sm group-hover:scale-105 transition-transform duration-200">
+        <div class="flex items-baseline gap-1.5">
+          <span class="text-xl font-bold tracking-tight text-slate-900">Plik</span>
+          <span class="text-xs font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">พลิก</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+        <a href="#interactive-demo" class="hover:text-emerald-600 transition-colors">เดโมสด</a>
+        <a href="#impact" class="hover:text-emerald-600 transition-colors">ผลลัพธ์ (Impact)</a>
+        <a href="#features" class="hover:text-emerald-600 transition-colors">ฟีเจอร์เด่น</a>
+        <a href="#architecture" class="hover:text-emerald-600 transition-colors">สถาปัตยกรรม CHA</a>
+        <a href="#comparison" class="hover:text-emerald-600 transition-colors">เปรียบเทียบ</a>
+        <a href="#calculator" class="hover:text-emerald-600 transition-colors">คำนวณเวลาที่ประหยัด</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/plik-app/plik" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors text-slate-700">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+        <a href="#download" class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm shadow-emerald-600/20 transition-all hover:shadow-md hover:shadow-emerald-600/30">
+          <span>ดาวน์โหลด</span>
+          <span class="text-[10px] bg-emerald-700 px-1.5 py-0.5 rounded text-emerald-100">Windows</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="relative overflow-hidden pt-16 pb-20 tech-grid">
+    <!-- Ambient glow gradients -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-emerald-100/40 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+    <div class="absolute top-1/3 right-10 w-[400px] h-[300px] bg-teal-100/30 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-200 bg-emerald-50/70 text-emerald-800 text-xs font-semibold mb-8 shadow-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500 -ml-4"></span>
+        <span>The Minimal, Modern, Invisible Keyboard Engine</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-[1.15]">
+        พิมพ์ผิดภาษา? <br class="sm:hidden">ให้ <span class="text-emerald-600 relative inline-block">Plik<svg class="absolute left-0 -bottom-1 w-full h-2.5 text-emerald-300" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 15 Q 50 0, 100 15" stroke="currentColor" stroke-width="4" fill="none"/></svg></span> พลิกให้ในพริบตา
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
+        สลับภาษาไทย-อังกฤษและแก้คำผิดอัตโนมัติบน Windows ด้วยความเร็ว <span class="text-slate-900 font-semibold">$O(1) < 0.05\ \mu\text{s}$</span> ทำงานเงียบในพื้นหลัง ไม่สะดุด ไม่หน่วงนิ้วมือ และเป็นส่วนตัว 100% ไร้การต่ออินเทอร์เน็ต
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#download" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm hover:bg-emerald-700 shadow-md shadow-emerald-600/25 hover:shadow-lg hover:shadow-emerald-600/35 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>ดาวน์โหลด Plik v1.0.0 สำหรับ Windows</span>
+        </a>
+        <a href="#interactive-demo" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-slate-700 font-semibold text-sm border border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-xs transition-all">
+          <span>ลองเล่นเดโมพิมพ์สด</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </a>
+      </div>
+
+      <!-- Key Micro-Badges -->
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500 font-medium">
+        <div class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span>511,076 คำศัพท์คู่ขนาน</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span>100% Offline ไร้เน็ต</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span>ไม่แตะต้องโค้ดใน VS Code</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span>กด Backspace ย้อนคืนทันที (Instant Undo)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE SHOWCASE & TYPING FLIP ANIMATION (HERO FEATURE) -->
+  <section id="interactive-demo" class="py-16 bg-slate-50/60 border-y border-slate-100 relative">
+    <div class="max-w-5xl mx-auto px-6">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-xs font-bold uppercase tracking-widest text-emerald-600">Live Simulator</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-2">ดูการทำงานแบบสด ๆ: พลิกคำผิดใน 0.001 วินาที</h2>
+        <p class="text-sm text-slate-500 mt-2">คลิกเลือกตัวอย่างด้านล่าง หรือพิมพ์คำของคุณเองเพื่อดูเอฟเฟกต์การสลับภาษาแบบเรียลไทม์</p>
+      </div>
+
+      <!-- Presets Pill Bar -->
+      <div class="flex flex-wrap items-center justify-center gap-2 mb-6">
+        <button onclick="runSimulation('cotoe.sh', 'แนะนำให้', 'TH', 'Bypass syntax guard + Continuous Thai')" class="preset-btn px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 shadow-xs transition-all active:scale-95">
+          cotoe.sh &rarr; แนะนำให้
+        </button>
+        <button onclick="runSimulation(';yo', 'สวัสดี', 'TH', 'Tier 0 Lexicon Instant Match')" class="preset-btn px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 shadow-xs transition-all active:scale-95">
+          ;yo &rarr; สวัสดี
+        </button>
+        <button onclick="runSimulation('dkifu[bf;y;', 'การทำงาน', 'TH', 'Continuous Unspaced Thai')" class="preset-btn px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 shadow-xs transition-all active:scale-95">
+          dkifu[bf;y; &rarr; การทำงาน
+        </button>
+        <button onclick="runSimulation('นะค่ะ', 'นะคะ', 'TH_CORRECT', 'Auto-Correction ไม้เอก/ไม้โท')" class="preset-btn px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 shadow-xs transition-all active:scale-95">
+          นะค่ะ &rarr; นะคะ ✨
+        </button>
+        <button onclick="runSimulation('teh', 'the', 'EN_CORRECT', 'English Typo Auto-Correction')" class="preset-btn px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 shadow-xs transition-all active:scale-95">
+          teh &rarr; the ✨
+        </button>
+        <button onclick="runSimulation('deploy.sh', 'deploy.sh', 'DEV_PROTECT', 'VS Code Shell Script Protection')" class="preset-btn px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-white border border-slate-200 hover:border-emerald-500 hover:text-emerald-700 shadow-xs transition-all active:scale-95">
+          deploy.sh &rarr; ป้องกันโค้ด 🛡️
+        </button>
+      </div>
+
+      <!-- App Window Frame -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xl overflow-hidden">
+        <!-- Window Titlebar -->
+        <div class="bg-slate-100/90 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-rose-400"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+            <span class="ml-3 text-xs font-mono text-slate-500">LINE / Slack / Word Desktop Active Session</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="engineStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-800">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+              Plik Hook: Active
+            </span>
+          </div>
+        </div>
+
+        <!-- Typing Demonstration Screen -->
+        <div class="p-8 sm:p-12 min-h-[260px] flex flex-col justify-center items-center text-center relative overflow-hidden">
+          
+          <!-- State Transition Box -->
+          <div class="w-full max-w-xl">
+            <!-- Labels -->
+            <div class="flex justify-between items-center text-xs font-semibold text-slate-400 mb-2 px-1">
+              <span>KEYSTROKE INPUT (สิ่งที่กดบนแป้น)</span>
+              <span id="actionBadge" class="text-emerald-600 font-mono">READY</span>
+            </div>
+
+            <!-- The Flipping Card Stage -->
+            <div class="relative bg-slate-50 border border-slate-200 rounded-xl p-6 min-h-[110px] flex items-center justify-center perspective-1000 shadow-inner">
+              <div id="displayCard" class="w-full transition-all duration-300 transform">
+                <span id="displayedText" class="text-3xl sm:text-4xl font-mono font-bold tracking-tight text-slate-800">
+                  cotoe.sh
+                </span>
+              </div>
+            </div>
+
+            <!-- Detail Breakdown -->
+            <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 px-1 font-mono">
+              <span id="explanationText">กำลังจำลอง: กดแป้นพิมพ์ภาษาอังกฤษขณะลืมกดเปลี่ยนภาษา</span>
+              <span id="latencyText" class="text-emerald-600 font-semibold">&tau; = 0.042 &mu;s | Conf: 1.00</span>
+            </div>
+          </div>
+
+          <!-- Controls bar -->
+          <div class="mt-8 flex items-center gap-3">
+            <button onclick="triggerAutoLoop()" id="autoLoopBtn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span>เล่นวนลูปอัตโนมัติ</span>
+            </button>
+            <button onclick="triggerUndoDemo()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-all">
+              <span class="font-mono bg-slate-100 px-1 py-0.5 rounded border border-slate-200 text-[10px]">Backspace</span>
+              <span>ทดสอบ Instant Undo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Live Input Box -->
+        <div class="bg-slate-50/80 border-t border-slate-200 p-4 sm:px-8 flex flex-col sm:flex-row items-center gap-3">
+          <label for="customTestInput" class="text-xs font-semibold text-slate-700 whitespace-nowrap">ลองพิมพ์คำของคุณเอง:</label>
+          <div class="relative w-full">
+            <input 
+              id="customTestInput" 
+              type="text" 
+              placeholder="ลองพิมพ์ เช่น ;yo หรือ dki หรือ นะค่ะ หรือ teh..."
+              class="w-full px-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-mono"
+            >
+            <span class="absolute right-3 top-2.5 text-[10px] text-slate-400 font-mono">Real-Time CHA Test</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- THE IMPACT SECTION: REAL WORLD NUMBERS -->
+  <section id="impact" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-widest text-emerald-600">The Problem & The Impact</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">ความสูญเสียที่คนไทยมองข้ามทุกวัน</h2>
+        <p class="text-slate-600 mt-3 text-base">
+          คนไทยที่ทำงานหน้าคอมพิวเตอร์พิมพ์ข้อความเฉลี่ยวันละ 5,000 – 15,000 คำ และเผชิญปัญหาพิมพ์ผิดภาษาซ้ำแล้วซ้ำเล่า
+        </p>
+      </div>
+
+      <!-- 4 High Impact Metric Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Card 1 -->
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 shadow-xs hover:border-emerald-200 transition-colors">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg mb-4">
+            ⏱️
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">18.5 นาที</div>
+          <div class="text-sm font-semibold text-emerald-700 mt-1">เวลาที่เสียไปต่อคน/วัน</div>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+            เฉลี่ยคนทำงานกด Backspace ลบทั้งประโยคแล้วพิมพ์ใหม่ 20-35 ครั้งต่อวัน ทำให้สูญเสียสมาธิ (Flow State) ทุกครั้งที่ต้องเริ่มใหม่
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 shadow-xs hover:border-emerald-200 transition-colors">
+          <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg mb-4">
+            📅
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">80+ ชม.</div>
+          <div class="text-sm font-semibold text-teal-700 mt-1">คืนเวลาชีวิตต่อคน/ปี</div>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+            เทียบเท่ากับการได้วันทำงานเพิ่มขึ้นฟรี ๆ ถึง 10 วันทำการต่อปี โดยที่คุณไม่ต้องเหนื่อยลบหรือหงุดหงิดกับแป้นพิมพ์อีกต่อไป
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 shadow-xs hover:border-emerald-200 transition-colors">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-lg mb-4">
+            ⚡
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">&lt; 0.05 &mu;s</div>
+          <div class="text-sm font-semibold text-amber-700 mt-1">ความเร็วที่ไม่รับรู้ความหน่วง</div>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+            เร็วกว่าการกะพริบตา 6,000,000 เท่า เอนจิน O(1) ประมวลผลคำศัพท์ 511k คำจบก่อนที่นิ้วของคุณจะยกขึ้นจากคีย์บอร์ด
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 shadow-xs hover:border-emerald-200 transition-colors">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg mb-4">
+            🛡️
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">0 Byte</div>
+          <div class="text-sm font-semibold text-emerald-700 mt-1">ไม่มีข้อมูลส่งออกนอกเครื่อง</div>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+            ไม่บันทึกคีย์บอร์ด ไม่ส่งข้อมูลเข้าคลาวด์ ไม่มีความเสี่ยงเรื่องรั่วไหลของรหัสผ่าน พิมพ์เอกสารลับขององค์กรได้อย่างสบายใจ
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Before & After Comparison Story -->
+      <div class="mt-16 bg-gradient-to-br from-slate-50 via-white to-slate-50 rounded-3xl border border-slate-200/80 p-8 sm:p-12 shadow-sm">
+        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 text-center mb-8">ความแตกต่างที่คุณจะสัมผัสได้ตั้งแต่นาทีแรก</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Before -->
+          <div class="bg-white p-6 rounded-2xl border border-rose-100 shadow-xs">
+            <div class="flex items-center gap-2 text-rose-600 font-bold text-sm mb-3">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              <span>ชีวิตการพิมพ์แบบเดิม (Without Plik)</span>
+            </div>
+            <ul class="space-y-3 text-sm text-slate-600">
+              <li class="flex items-start gap-2">
+                <span class="text-rose-500 font-bold">•</span>
+                <span>พิมพ์ข้อความยาวใน LINE/Slack: <code class="bg-rose-50 text-rose-700 px-1 py-0.5 rounded">;yo8nvgik9hv'dkifhk...</code> แล้วกด Enter ไปแล้ว ต้องตามขอโทษเพื่อนร่วมงาน</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-rose-500 font-bold">•</span>
+                <span>ต้องคอยก้มมอง Taskbar ว่าตอนนี้เครื่องเป็นภาษาไทยหรืออังกฤษ</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-rose-500 font-bold">•</span>
+                <span>พิมพ์คำว่า <code class="bg-rose-50 text-rose-700 px-1 py-0.5 rounded">นะค่ะ</code> หรือ <code class="bg-rose-50 text-rose-700 px-1 py-0.5 rounded">กระเพรา</code> ติดเป็นนิสัย เสียภาพลักษณ์มืออาชีพ</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-rose-500 font-bold">•</span>
+                <span>โปรแกรมสลับภาษาทั่วไปชอบไปเปลี่ยนโค้ดหรือชื่อตัวแปรใน VS Code ทำให้ build พัง</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- After -->
+          <div class="bg-white p-6 rounded-2xl border border-emerald-200 shadow-xs">
+            <div class="flex items-center gap-2 text-emerald-600 font-bold text-sm mb-3">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>เมื่อมี Plik (With Plik Installed)</span>
+            </div>
+            <ul class="space-y-3 text-sm text-slate-600">
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">•</span>
+                <span>พิมพ์อะไรก็ออกเป็นภาษานั้นทันที Plik พลิกคำผิดให้ตั้งแต่ตัวอักษรที่ 3 ลื่นไหลเหมือนคุยกับสมอง</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">•</span>
+                <span>ลืมปุ่ม Grave Accent (~) หรือ Alt+Shift ไปได้เลย โฟกัสกับเนื้อหาอย่างเดียว</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">•</span>
+                <span>คำผิดยอดฮิต เช่น <code class="bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded">นะคะ</code>, <code class="bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded">กะเพรา</code>, <code class="bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded">the</code> ได้รับการแก้ให้ถูกต้องโดยอัตโนมัติ</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">•</span>
+                <span>มีระบบ Syntax Guard คอยคุ้มครอง VS Code, Terminals, คำสั่ง <code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded">git</code>, <code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded">.sh</code> โค้ดไม่เพี้ยน 100%</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- INTERACTIVE ROI / TIME-SAVER CALCULATOR -->
+  <section id="calculator" class="py-16 bg-slate-50 border-t border-slate-200/80">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-12 shadow-sm">
+        
+        <div class="text-center max-w-xl mx-auto mb-10">
+          <span class="text-xs font-bold uppercase tracking-widest text-emerald-600">Productivity Calculator</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">คำนวณเวลาที่ Plik จะช่วยคุณประหยัด</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-2">เลื่อนแถบเพื่อดูว่าคุณจะประหยัดเวลาพิมพ์ผิดได้มากแค่ไหนในแต่ละปี</p>
+        </div>
+
+        <div class="max-w-xl mx-auto">
+          <!-- Slider -->
+          <div class="mb-8">
+            <div class="flex justify-between items-center text-sm font-semibold text-slate-700 mb-2">
+              <span>คุณพิมพ์งานหน้าคอมพิวเตอร์เฉลี่ย:</span>
+              <span id="hoursLabel" class="text-emerald-600 font-mono text-base font-bold">5 ชั่วโมง / วัน</span>
+            </div>
+            <input 
+              id="hoursSlider" 
+              type="range" 
+              min="1" 
+              max="12" 
+              value="5" 
+              class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+              oninput="updateCalculator(this.value)"
+            >
+            <div class="flex justify-between text-[11px] text-slate-400 font-mono mt-1">
+              <span>1 ชม.</span>
+              <span>4 ชม.</span>
+              <span>8 ชม. (Full-Time)</span>
+              <span>12 ชม.</span>
+            </div>
+          </div>
+
+          <!-- Calculated Results Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
+            <div class="bg-emerald-50/70 border border-emerald-100 rounded-2xl p-4">
+              <div id="annualHours" class="text-2xl sm:text-3xl font-extrabold text-emerald-700 font-mono">92.5</div>
+              <div class="text-xs font-semibold text-emerald-900 mt-1">ชั่วโมงที่ประหยัดได้ / ปี</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
+              <div id="annualKeystrokes" class="text-2xl sm:text-3xl font-extrabold text-slate-800 font-mono">48,100</div>
+              <div class="text-xs font-semibold text-slate-600 mt-1">การกดปุ่มที่ลดลง / ปี</div>
+            </div>
+            <div class="col-span-2 sm:col-span-1 bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
+              <div id="focusValue" class="text-2xl sm:text-3xl font-extrabold text-slate-800 font-mono">~11.5 วัน</div>
+              <div class="text-xs font-semibold text-slate-600 mt-1">สมาธิการทำงานที่ได้คืน</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE: CASCADED HYBRID ARCHITECTURE (CHA) -->
+  <section id="architecture" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-widest text-emerald-600">The Technology</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">เบื้องหลังความแม่นยำ: เอนจิน CHA 4 ระดับ</h2>
+        <p class="text-slate-600 mt-3 text-base">
+          แตกต่างจากโปรแกรมทั่วไปที่ใช้เพียงพจนานุกรมเดี่ยว Plik ผสาน 4 เทคโนโลยีเข้าด้วยกันเป็นสถาปัตยกรรม Cascaded Hybrid Architecture
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Tier 0 -->
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:shadow-md transition-shadow relative overflow-hidden">
+          <div class="text-xs font-mono font-bold text-emerald-600 mb-2">TIER 0 &bull; $O(1)$ LOOKUP</div>
+          <h4 class="text-lg font-bold text-slate-900">511k Dual Lexicon</h4>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+            พจนานุกรมคำศัพท์ไทย 137,006 คำ และอังกฤษ 374,070 คำ ค้นหาทันทีในหน่วยความจำ RAM ใช้เวลาไม่ถึง 0.05 ไมโครวินาที
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>RAM: ~30 MB</span>
+            <span class="text-emerald-600 font-semibold">Instant Match</span>
+          </div>
+        </div>
+
+        <!-- Tier 1 -->
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:shadow-md transition-shadow relative overflow-hidden">
+          <div class="text-xs font-mono font-bold text-teal-600 mb-2">TIER 1 &bull; CONSTRAINTS</div>
+          <h4 class="text-lg font-bold text-slate-900">Phonotactic Rules</h4>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+            กฎไวยากรณ์และสัทวิทยาภาษาไทย ตรวจจับการซ้อนสระ วรรณยุกต์ และสระหน้า เพื่อตัดความเป็นไปไม่ได้ออกตั้งแต่ตัวอักษรแรก
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Deterministic</span>
+            <span class="text-teal-600 font-semibold">Zero False Swap</span>
+          </div>
+        </div>
+
+        <!-- Tier 2 -->
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:shadow-md transition-shadow relative overflow-hidden">
+          <div class="text-xs font-mono font-bold text-amber-600 mb-2">TIER 2 &bull; PROBABILISTIC</div>
+          <h4 class="text-lg font-bold text-slate-900">N-gram Scorer</h4>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+            โมเดลความน่าจะเป็น Bigram / Trigram คำนวณความถี่การเปลี่ยนผ่านของพยัญชนะไทย-อังกฤษ สำหรับคำสแลงหรือคำศัพท์ใหม่นอกพจนานุกรม
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Bayesian Math</span>
+            <span class="text-amber-600 font-semibold">Adaptive</span>
+          </div>
+        </div>
+
+        <!-- Tier 3 -->
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:shadow-md transition-shadow relative overflow-hidden">
+          <div class="text-xs font-mono font-bold text-indigo-600 mb-2">TIER 3 &bull; IMMUNITY</div>
+          <h4 class="text-lg font-bold text-slate-900">Syntax Guard</h4>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+            เรดาร์ตรวจจับบริบท ไม่สลับคำสั่ง Shell Script, URL, IP Address, หรือโค้ดตัวแปรภาษาโปรแกรมมิ่งใน VS Code โดยเด็ดขาด
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Dev Protected</span>
+            <span class="text-indigo-600 font-semibold">Safe Coding</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE: PLIK VS RIGHTLANG VS WINDOWS -->
+  <section id="comparison" class="py-20 bg-slate-50 border-t border-slate-200/80">
+    <div class="max-w-5xl mx-auto px-6">
+      
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="text-xs font-bold uppercase tracking-widest text-emerald-600">Feature Matrix</span>
+        <h2 class="text-3xl font-extrabold text-slate-900 mt-2">ทำไม Plik จึงล้ำหน้ากว่าตัวเลือกอื่น</h2>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50/70 text-xs font-semibold text-slate-700">
+              <th class="p-4 sm:p-5">ฟีเจอร์ / คุณสมบัติ</th>
+              <th class="p-4 sm:p-5 text-emerald-700 bg-emerald-50/50 font-bold">⚡ Plik (พลิก)</th>
+              <th class="p-4 sm:p-5 text-slate-500">RightLang</th>
+              <th class="p-4 sm:p-5 text-slate-500">Windows ทั่วไป</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-600 font-medium">
+            <tr>
+              <td class="p-4 sm:p-5 font-semibold text-slate-800">ขนาดคลังคำศัพท์</td>
+              <td class="p-4 sm:p-5 text-emerald-600 font-bold bg-emerald-50/30">511,076 คำ (ไทย 137k + อังกฤษ 374k)</td>
+              <td class="p-4 sm:p-5 text-slate-500">~60,000 คำ</td>
+              <td class="p-4 sm:p-5 text-slate-400">ไม่มี (ต้องกดเอง)</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-semibold text-slate-800">ระบบแก้คำผิดอัตโนมัติ (นะค่ะ &rarr; นะคะ)</td>
+              <td class="p-4 sm:p-5 text-emerald-600 font-bold bg-emerald-50/30">มี (150+ คำไทย, 100+ คำอังกฤษ)</td>
+              <td class="p-4 sm:p-5 text-rose-500">ไม่มี</td>
+              <td class="p-4 sm:p-5 text-slate-400">ไม่มี</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-semibold text-slate-800">ภาษาไทยต่อเนื่องไม่เว้นวรรค (แนะนำให้...)</td>
+              <td class="p-4 sm:p-5 text-emerald-600 font-bold bg-emerald-50/30">รองรับสมบูรณ์แบบ (Asymmetric Buffer)</td>
+              <td class="p-4 sm:p-5 text-amber-600">ติดขัดบ่อยครั้ง</td>
+              <td class="p-4 sm:p-5 text-slate-400">-</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-semibold text-slate-800">ความปลอดภัยสำหรับโปรแกรมเมอร์ (VS Code)</td>
+              <td class="p-4 sm:p-5 text-emerald-600 font-bold bg-emerald-50/30">Syntax Guard &bull; คุ้มครองโค้ด 100%</td>
+              <td class="p-4 sm:p-5 text-amber-600">อาจเปลี่ยน syntax ผิดพลาด</td>
+              <td class="p-4 sm:p-5 text-slate-400">-</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-semibold text-slate-800">การกด Backspace เพื่อย้อนคืน (Instant Undo)</td>
+              <td class="p-4 sm:p-5 text-emerald-600 font-bold bg-emerald-50/30">กด 1 ครั้ง คืนคำเดิมทันที</td>
+              <td class="p-4 sm:p-5 text-slate-500">ต้องกดปุ่มลัดพิเศษ</td>
+              <td class="p-4 sm:p-5 text-slate-400">-</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-semibold text-slate-800">ความเป็นส่วนตัว (Privacy & Offline)</td>
+              <td class="p-4 sm:p-5 text-emerald-600 font-bold bg-emerald-50/30">100% Offline ไร้เน็ตเด็ดขาด</td>
+              <td class="p-4 sm:p-5 text-slate-500">Offline</td>
+              <td class="p-4 sm:p-5 text-slate-500">Offline</td>
+            </tr>
+            <tr>
+              <td class="p-4 sm:p-5 font-semibold text-slate-800">สัญญาอนุญาต (License)</td>
+              <td class="p-4 sm:p-5 text-emerald-600 font-bold bg-emerald-50/30">Open Source (MIT) &bull; ฟรีตลอดชีพ</td>
+              <td class="p-4 sm:p-5 text-slate-500">Freeware / Closed Source</td>
+              <td class="p-4 sm:p-5 text-slate-500">Built-in OS</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DOWNLOAD / CTA SECTION -->
+  <section id="download" class="py-24 bg-white relative tech-grid">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      
+      <div class="inline-flex p-3 rounded-2xl bg-emerald-50 border border-emerald-100 mb-6">
+        <img src="app_icon.png" alt="Plik Icon" class="w-14 h-14 rounded-xl shadow-xs">
+      </div>
+
+      <h2 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
+        เริ่มต้นใช้งาน Plik วันนี้
+      </h2>
+      <p class="mt-4 text-base sm:text-lg text-slate-600 max-w-xl mx-auto font-normal">
+        ดาวน์โหลดฟรีสำหรับ Windows 10 และ Windows 11 (64-bit) ติดตั้งใน 5 วินาที พร้อมใช้งานได้ทันที
+      </p>
+
+      <!-- Download Cards -->
+      <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto text-left">
+        
+        <!-- Installer Card -->
+        <div class="p-6 rounded-2xl border-2 border-emerald-500 bg-white shadow-lg shadow-emerald-500/10 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">แนะนำ</span>
+              <span class="text-xs font-mono text-slate-400">v1.0.0</span>
+            </div>
+            <h4 class="text-lg font-bold text-slate-900 mt-3">Plik Setup Installer</h4>
+            <p class="text-xs text-slate-500 mt-1">ตัวติดตั้ง One-Click มี Shortcut บนหน้าจอ พร้อมระบบเปิดตอนเปิดเครื่องอัตโนมัติ</p>
+          </div>
+          <div class="mt-6">
+            <a href="https://github.com/plik-app/plik/releases/download/v1.0.0/Plik_Setup_v1.0.exe" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white font-semibold text-xs hover:bg-emerald-700 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>ดาวน์โหลดตัวติดตั้ง (.exe)</span>
+            </a>
+            <div class="text-[10px] text-center text-slate-400 font-mono mt-2">ไม่ต้องใช้สิทธิ์ Admin &bull; ~30 MB</div>
+          </div>
+        </div>
+
+        <!-- Portable Card -->
+        <div class="p-6 rounded-2xl border border-slate-200 bg-slate-50 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700">Portable</span>
+              <span class="text-xs font-mono text-slate-400">v1.0.0</span>
+            </div>
+            <h4 class="text-lg font-bold text-slate-900 mt-3">Plik Standalone</h4>
+            <p class="text-xs text-slate-500 mt-1">ไฟล์เดี่ยวพร้อมรัน ไม่ต้องติดตั้ง พกพาใส่แฟลชไดรฟ์เปิดใช้งานได้ทุกที่</p>
+          </div>
+          <div class="mt-6">
+            <a href="https://github.com/plik-app/plik/releases/download/v1.0.0/Plik.exe" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold text-xs hover:bg-slate-100 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>ดาวน์โหลดไฟล์เดี่ยว (.exe)</span>
+            </a>
+            <div class="text-[10px] text-center text-slate-400 font-mono mt-2">Zero Installation &bull; ~30 MB</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-50 border-t border-slate-200 py-12 text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <img src="app_icon.png" alt="Plik Logo" class="w-6 h-6 rounded-lg opacity-80">
+        <span class="font-semibold text-slate-700">Plik (พลิก)</span>
+        <span>&mdash; Copyright &copy; 2026 Plik Software Team. Open Source under MIT License.</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/plik-app/plik" target="_blank" class="hover:text-slate-800 transition-colors">GitHub Repository</a>
+        <a href="https://github.com/plik-app/plik/blob/main/LICENSE" target="_blank" class="hover:text-slate-800 transition-colors">License (MIT)</a>
+        <a href="#interactive-demo" class="hover:text-slate-800 transition-colors">เดโมสด</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT: REAL-TIME SIMULATION & INTERACTIVITY -->
+  <script>
+    // Kedmanee Keyboard Mapping
+    const EN_TO_TH = {
+      'q':'ๆ','w':'ไ','e':'ำ','r':'พ','t':'ะ','y':'ั','u':'ี','i':'ร','o':'น','p':'ย','[':'บ',']':'ล',
+      'a':'ฟ','s':'ห','d':'ก','f':'ด','g':'เ','h':'้','j':'่','k':'า','l':'ส',';':'ว','\'':'ง',
+      'z':'ผ','x':'ป','c':'แ','v':'อ','b':'ิ','n':'ื','m':'ท',',':'ม','.':'ใ','/':'ฝ',
+      'Q':'๐','W':'\"','E':'ฎ','R':'ฑ','T':'ธ','Y':'ํ','U':'๊','I':'ณ','O':'ฯ','P':'ญ','{':'ฐ','}':',',
+      'A':'ฤ','S':'ฆ','D':'ฏ','F':'โ','G':'ฌ','H':'็','J':'๋','K':'ษ','L':'ศ',':':'ซ','"':'?',
+      'Z':'(', 'X':')','C':'ฉ','V':'ฮ','B':'ฺ','N':'์','M':'?', '<':'ฒ','>':'ฬ','?':'ฦ'
+    };
+
+    // Curated Typos
+    const TYPOS_TH = {
+      'นะค่ะ': 'นะคะ',
+      'กระเพรา': 'กะเพรา',
+      'สังเกตุ': 'สังเกต',
+      'อนุญาติ': 'อนุญาต',
+      'โอกาศ': 'โอกาส',
+      'เซ็นต์ชื่อ': 'เซ็นชื่อ',
+      'ออฟฟิต': 'ออฟฟิศ'
+    };
+
+    const TYPOS_EN = {
+      'teh': 'the',
+      'recieve': 'receive',
+      'seperate': 'separate',
+      'definately': 'definitely'
+    };
+
+    // Converter Function
+    function convertKeystrokes(str) {
+      // 1. Check Typos
+      if (TYPOS_TH[str]) return { text: TYPOS_TH[str], type: 'AUTOCORRECT', label: 'Auto-Corrected: ' + TYPOS_TH[str] };
+      if (TYPOS_EN[str.toLowerCase()]) {
+        let corr = TYPOS_EN[str.toLowerCase()];
+        if (str[0] === str[0].toUpperCase()) corr = corr.charAt(0).toUpperCase() + corr.slice(1);
+        return { text: corr, type: 'AUTOCORRECT', label: 'Auto-Corrected: ' + corr };
+      }
+
+      // 2. Convert Kedmanee
+      let th = '';
+      for (let ch of str) {
+        th += EN_TO_TH[ch] !== undefined ? EN_TO_TH[ch] : ch;
+      }
+      return { text: th, type: 'CONVERTED', label: 'Auto-Switched to TH' };
+    }
+
+    // Simulation Runner
+    const displayCard = document.getElementById('displayCard');
+    const displayedText = document.getElementById('displayedText');
+    const actionBadge = document.getElementById('actionBadge');
+    const explanationText = document.getElementById('explanationText');
+    const latencyText = document.getElementById('latencyText');
+
+    let isFlipped = false;
+    let lastOriginal = '';
+
+    function runSimulation(input, output, mode, explanation) {
+      lastOriginal = input;
+      displayedText.textContent = input;
+      displayedText.className = "text-3xl sm:text-4xl font-mono font-bold tracking-tight text-slate-400";
+      actionBadge.textContent = "TYPING...";
+      actionBadge.className = "text-amber-500 font-mono";
+      explanationText.textContent = "กำลังกดแป้น: '" + input + "'";
+      latencyText.textContent = "Processing...";
+
+      // Trigger 3D flip after 400ms
+      setTimeout(() => {
+        displayCard.classList.add('rotate-x-90', 'opacity-0');
+
+        setTimeout(() => {
+          displayedText.textContent = output;
+          displayCard.classList.remove('rotate-x-90', 'opacity-0');
+          displayCard.classList.add('animate-flipIn');
+
+          if (mode === 'DEV_PROTECT') {
+            displayedText.className = "text-3xl sm:text-4xl font-mono font-bold tracking-tight text-slate-800";
+            actionBadge.textContent = "SYNTAX GUARD (IMMUNE)";
+            actionBadge.className = "text-indigo-600 font-mono font-bold";
+            latencyText.textContent = "Protected in code.exe | Conf: 1.00";
+          } else if (mode.includes('CORRECT')) {
+            displayedText.className = "text-3xl sm:text-4xl font-mono font-bold tracking-tight text-emerald-600";
+            actionBadge.textContent = "AUTO-CORRECTED ✨";
+            actionBadge.className = "text-emerald-600 font-mono font-bold";
+            latencyText.textContent = "\u03C4 = 0.024 \u03BCs | Typo Replaced";
+          } else {
+            displayedText.className = "text-3xl sm:text-4xl font-mono font-bold tracking-tight text-emerald-600";
+            actionBadge.textContent = "FLIPPED TO " + mode + " ⚡";
+            actionBadge.className = "text-emerald-600 font-mono font-bold";
+            latencyText.textContent = "\u03C4 = 0.041 \u03BCs | Conf: 1.00";
+          }
+
+          explanationText.textContent = explanation;
+
+          setTimeout(() => {
+            displayCard.classList.remove('animate-flipIn');
+          }, 350);
+        }, 150);
+      }, 350);
+    }
+
+    function triggerUndoDemo() {
+      if (!lastOriginal) lastOriginal = 'cotoe.sh';
+      displayedText.textContent = lastOriginal;
+      displayedText.className = "text-3xl sm:text-4xl font-mono font-bold tracking-tight text-amber-600";
+      actionBadge.textContent = "INSTANT UNDO ↩️";
+      actionBadge.className = "text-amber-600 font-mono font-bold";
+      explanationText.textContent = "กด Backspace ทันที: ระบบย้อนคืนค่าเดิม '" + lastOriginal + "' โดยไม่ต้องพิมพ์ใหม่";
+      latencyText.textContent = "Restored original string in 0.012 \u03BCs";
+    }
+
+    // Auto-loop demo
+    let autoLoopInterval = null;
+    const presets = [
+      { in: 'cotoe.sh', out: 'แนะนำให้', m: 'TH', exp: 'Bypass syntax guard + Continuous Thai' },
+      { in: ';yo', out: 'สวัสดี', m: 'TH', exp: 'Tier 0 Lexicon Instant Match' },
+      { in: 'dkifu[bf;y;', out: 'การทำงาน', m: 'TH', exp: 'Continuous Unspaced Thai' },
+      { in: 'นะค่ะ', out: 'นะคะ', m: 'TH_CORRECT', exp: 'Auto-Correction ไม้เอก/ไม้โท' },
+      { in: 'teh', out: 'the', m: 'EN_CORRECT', exp: 'English Typo Auto-Correction' },
+      { in: 'deploy.sh', out: 'deploy.sh', m: 'DEV_PROTECT', exp: 'VS Code Shell Script Protection' }
+    ];
+    let presetIdx = 0;
+
+    function triggerAutoLoop() {
+      const btn = document.getElementById('autoLoopBtn');
+      if (autoLoopInterval) {
+        clearInterval(autoLoopInterval);
+        autoLoopInterval = null;
+        btn.classList.remove('bg-emerald-600');
+        btn.classList.add('bg-slate-900');
+        btn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>เล่นวนลูปอัตโนมัติ</span>`;
+      } else {
+        btn.classList.remove('bg-slate-900');
+        btn.classList.add('bg-emerald-600');
+        btn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>หยุดลูป</span>`;
+        autoLoopInterval = setInterval(() => {
+          const p = presets[presetIdx % presets.length];
+          runSimulation(p.in, p.out, p.m, p.exp);
+          presetIdx++;
+        }, 2200);
+      }
+    }
+
+    // Live Custom Input Field Handler
+    const customInput = document.getElementById('customTestInput');
+    customInput.addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (!val) {
+        displayedText.textContent = "cotoe.sh";
+        displayedText.className = "text-3xl sm:text-4xl font-mono font-bold tracking-tight text-slate-800";
+        actionBadge.textContent = "READY";
+        explanationText.textContent = "ลองพิมพ์คำของคุณเองในช่องด้านล่าง";
+        return;
+      }
+      const res = convertKeystrokes(val);
+      displayedText.textContent = res.text;
+      displayedText.className = "text-3xl sm:text-4xl font-mono font-bold tracking-tight text-emerald-600";
+      actionBadge.textContent = res.label;
+      explanationText.textContent = "อินพุตสด: '" + val + "' &rarr; '" + res.text + "'";
+      latencyText.textContent = "\u03C4 = 0.038 \u03BCs";
+    });
+
+    // Productivity Calculator
+    function updateCalculator(hours) {
+      document.getElementById('hoursLabel').textContent = hours + ' ชั่วโมง / วัน';
+      // Calculation assumptions:
+      // ~25 mistakes per 5 hours = 5 mistakes / hr
+      // Each mistake costs ~45 seconds (spotting, backspacing, retyping, re-focusing)
+      const mistakesPerDay = hours * 5.2;
+      const minutesSavedPerDay = (mistakesPerDay * 45) / 60;
+      const annualHours = ((minutesSavedPerDay * 250) / 60).toFixed(1);
+      const annualKeystrokes = Math.round(mistakesPerDay * 37 * 250);
+      const daysGained = (annualHours / 8).toFixed(1);
+
+      document.getElementById('annualHours').textContent = annualHours;
+      document.getElementById('annualKeystrokes').textContent = annualKeystrokes.toLocaleString();
+      document.getElementById('focusValue').textContent = '~' + daysGained + ' วัน';
+    }
+  </script>
+</body>
+</html>
