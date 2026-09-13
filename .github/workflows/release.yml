@@ -1,0 +1,76 @@
+name: Build and Release Production App
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    name: Build Plik.exe & Setup Installer
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run Test Suite
+        run: |
+          pytest tests -q
+
+      - name: Build Standalone Executable (PyInstaller)
+        run: |
+          pyinstaller --clean -y Plik.spec
+
+      - name: Compile Inno Setup Installer
+        uses: jrsoftware/inno-setup-action@v1
+        with:
+          filepath: installer/Plik_Setup.iss
+
+      - name: Sign Binaries (Optional if Secret Configured)
+        if: env.CERT_BASE64 != ''
+        env:
+          CERT_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
+          CERT_PASS: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        shell: powershell
+        run: |
+          $pfxBytes = [System.Convert]::FromBase64String($env:CERT_BASE64)
+          [System.IO.File]::WriteAllBytes("cert.pfx", $pfxBytes)
+          & "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /f cert.pfx /p $env:CERT_PASS /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 dist/Plik.exe
+          & "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /f cert.pfx /p $env:CERT_PASS /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 dist_installer/Plik_Setup_v1.0.exe
+          Remove-Item cert.pfx
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Plik ${{ github.ref_name }}
+          body: |
+            ## Plik (พลิก) — Release ${{ github.ref_name }}
+            
+            ⚡ **Intelligent Thai-English Keyboard Switcher & Auto-Corrector**
+            
+            ### Downloads:
+            - **`Plik_Setup_v1.0.exe`**: Recommended for most users. One-click installer with desktop shortcut, auto-startup, and clean uninstaller.
+            - **`Plik.exe`**: Portable standalone executable. Run anywhere without installation.
+            
+            ### Highlights:
+            - 🚀 Cascaded Hybrid Architecture (CHA) with 511,076-word vocabulary.
+            - ✨ Auto-Correction for common Thai (150+) and English (100+) typos.
+            - 🛡️ Zero-lag low-level Windows Hook (`WH_KEYBOARD_LL`) with developer tool immunity.
+            - 🔒 100% Offline & Private — Zero telemetry, zero network access.
+          files: |
+            dist/Plik.exe
+            dist_installer/Plik_Setup_v1.0.exe

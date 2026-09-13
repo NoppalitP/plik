@@ -1,0 +1,36 @@
+# UTF-8
+#
+# Plik Version Info Resource
+#
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(1, 0, 0, 0),
+    prodvers=(1, 0, 0, 0),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+        StringTable(
+          '040904B0',
+          [
+            StringStruct('CompanyName', 'Plik Software'),
+            StringStruct('FileDescription', 'Plik - Intelligent Keyboard Switcher & Auto-Corrector'),
+            StringStruct('FileVersion', '1.0.0.0'),
+            StringStruct('InternalName', 'Plik'),
+            StringStruct('LegalCopyright', 'Copyright (C) 2026 Plik Software. All rights reserved.'),
+            StringStruct('OriginalFilename', 'Plik.exe'),
+            StringStruct('ProductName', 'Plik'),
+            StringStruct('ProductVersion', '1.0.0.0'),
+          ]
+        )
+      ]
+    ),
+    VarFileInfo([VarStruct('Translation', [1033, 1200])])
+  ]
+)

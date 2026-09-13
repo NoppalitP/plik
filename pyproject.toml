@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plik"
+version = "1.0.0"
+description = "Plik (พลิก): Ultra-fast, Intelligent Thai-English Keyboard Auto-Switcher & Corrector"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Plik Software Team", email = "dev@plik.io" }
+]
+keywords = [
+    "keyboard",
+    "switcher",
+    "thai",
+    "english",
+    "kedmanee",
+    "auto-correction",
+    "productivity",
+    "windows",
+    "rightlang"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Desktop Environment",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "pystray>=0.19.5",
+    "Pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pyinstaller>=6.4.0",
+]
+
+[project.scripts]
+plik = "plik.tray_app:main"
+
+[project.urls]
+Homepage = "https://github.com/plik-app/plik"
+Documentation = "https://github.com/plik-app/plik#readme"
+Issues = "https://github.com/plik-app/plik/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["plik*"]
+
+[tool.setuptools.package-data]
+plik = [
+    "data/*.txt",
+    "assets/*.ico",
+    "assets/*.png",
+    "assets/*.txt"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-q"

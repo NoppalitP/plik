@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / Packaging
+build/
+dist/
+dist_installer/
+*.egg-info/
+.eggs/
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+
+# PyInstaller
+*.manifest
+*.spec.bak
+
+# Logs & Diagnostics
+*.log
+plik.log
+smart_keyboard.log
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary test outputs
+.pytest_cache/
+.coverage
+htmlcov/
