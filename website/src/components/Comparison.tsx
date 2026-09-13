@@ -3,14 +3,54 @@ import { Check, X } from 'lucide-react';
 
 export const Comparison: React.FC = () => {
   const features = [
-    { name: 'สลับภาษาคำผิดให้อัตโนมัติทันทีที่เคาะ Space', plik: true, others: 'ช้า/ต้องกดคีย์ลัด', defaultWin: false },
-    { name: 'Code Guard ป้องกันคำสั่ง Git, CLI, Code File', plik: true, others: false, defaultWin: false },
-    { name: 'แก้ไขคำผิดภาษาไทยในตัว (เช่น นะค่ะ -> นะคะ)', plik: true, others: false, defaultWin: false },
-    { name: 'ทำงานออฟไลน์ 100% ไม่ส่งข้อมูลออกนอกเครื่อง', plik: true, others: 'บางตัวต่อ Cloud', defaultWin: true },
-    { name: 'กินแรมน้อย ไม่ทำให้เครื่องหน่วง (< 15 MB)', plik: true, others: false, defaultWin: true },
-    { name: 'Single-Instance Win32 Mutex ป้องกันเปิดโปรแกรมซ้ำ', plik: true, others: false, defaultWin: false },
-    { name: 'คีย์ลัด Pause / Resume ชั่วคราวได้ทันที', plik: true, others: true, defaultWin: false },
-    { name: 'Open Source ตรวจสอบซอร์สโค้ดได้ 100%', plik: true, others: false, defaultWin: false },
+    { 
+      name: 'การสลับภาษาอัตโนมัติ (Auto-flip on Space)', 
+      plik: 'ทันทีใน 0ms (CHA Engine)', 
+      others: 'มี แต่ False Positive สูง (มักเผลอสลับคำทับศัพท์)', 
+      defaultWin: false 
+    },
+    { 
+      name: 'Code Guard (คุ้มครองโค้ด & Terminal)', 
+      plik: true, 
+      others: false, 
+      defaultWin: false 
+    },
+    { 
+      name: 'แก้ไขคำผิดในตัว (นะค่ะ->นะคะ, teh->the)', 
+      plik: true, 
+      others: false, 
+      defaultWin: false 
+    },
+    { 
+      name: 'ความเป็นส่วนตัว (100% Air-gapped Offline)', 
+      plik: '100% ไม่มี Socket', 
+      others: 'บางตัวออฟไลน์ / บางตัวส่ง Cloud', 
+      defaultWin: 'มี Telemetry OS' 
+    },
+    { 
+      name: 'การใช้ทรัพยากร (RAM Working Set)', 
+      plik: '~33 MB (รันจริง)', 
+      others: '~20MB (เก่า) ถึง 150MB (Electron)', 
+      defaultWin: 'รวมในระบบ' 
+    },
+    { 
+      name: 'ความเข้ากันได้กับ Windows 11 64-bit', 
+      plik: 'Native 64-bit ลื่นไหล', 
+      others: 'ปิดการพัฒนา / มักหลุดบน Win11', 
+      defaultWin: true 
+    },
+    { 
+      name: 'Instant Undo (เคาะ Backspace 1 ครั้ง คืนค่าเดิม)', 
+      plik: true, 
+      others: 'ต้องกดคีย์ลัดสลับกลับ', 
+      defaultWin: false 
+    },
+    { 
+      name: 'ความโปร่งใสของโค้ด (Open Source)', 
+      plik: 'MIT License (GitHub)', 
+      others: 'Closed Source', 
+      defaultWin: 'Closed Source' 
+    },
   ];
 
   return (
