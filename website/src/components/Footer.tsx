@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
           <a href="#calculator" className="hover:text-slate-900 transition-colors">เครื่องคำนวณ</a>
           <a href="#download" className="hover:text-slate-900 transition-colors">ดาวน์โหลด</a>
           <a 
-            href="https://github.com" 
+            href="https://github.com/NoppalitP/plik" 
             target="_blank" 
             rel="noreferrer"
             className="flex items-center gap-1.5 hover:text-slate-900 transition-colors"

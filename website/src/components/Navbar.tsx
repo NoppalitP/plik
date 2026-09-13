@@ -52,7 +52,7 @@ export const Navbar: React.FC = () => {
         {/* Action Buttons */}
         <div className="flex items-center gap-3">
           <a
-            href="https://github.com"
+            href="https://github.com/NoppalitP/plik"
             target="_blank"
             rel="noreferrer"
             className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"

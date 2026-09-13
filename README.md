@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/plik-app/plik/actions"><img src="https://img.shields.io/github/actions/workflow/status/plik-app/plik/test.yml?branch=main&style=flat-square&label=tests" alt="Tests" /></a>
-  <a href="https://github.com/plik-app/plik/releases"><img src="https://img.shields.io/github/v/release/plik-app/plik?style=flat-square&color=059669" alt="Release" /></a>
+  <a href="https://github.com/NoppalitP/plik/actions"><img src="https://img.shields.io/github/actions/workflow/status/NoppalitP/plik/test.yml?branch=main&style=flat-square&label=tests" alt="Tests" /></a>
+  <a href="https://github.com/NoppalitP/plik/releases"><img src="https://img.shields.io/github/v/release/NoppalitP/plik?style=flat-square&color=059669" alt="Release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" /></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square" alt="Python Version" /></a>
   <a href="#"><img src="https://img.shields.io/badge/security-100%25%20Offline-success?style=flat-square" alt="Offline Security" /></a>
@@ -41,7 +41,7 @@
 ## 📥 Download & Installation (ดาวน์โหลดและติดตั้ง)
 
 ### วิธีที่ 1: One-Click Setup Installer (แนะนำสำหรับผู้ใช้ทั่วไป)
-1. ไปที่หน้า [Releases](https://github.com/plik-app/plik/releases)
+1. ไปที่หน้า [Releases](https://github.com/NoppalitP/plik/releases)
 2. ดาวน์โหลด **`Plik_Setup_v1.0.exe`**
 3. ดับเบิลคลิกเพื่อติดตั้ง (ไม่ต้องใช้สิทธิ์ Administrator)
 4. โปรแกรมจะสร้าง Shortcut บน Desktop/Start Menu และเริ่มทำงานบน System Tray ทันที
@@ -91,7 +91,7 @@
 ### Quick Start
 ```powershell
 # Clone the repository
-git clone https://github.com/plik-app/plik.git
+git clone https://github.com/NoppalitP/plik.git
 cd plik
 
 # Create virtual environment
