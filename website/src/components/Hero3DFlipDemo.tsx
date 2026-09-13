@@ -10,14 +10,51 @@ interface DemoStep {
   expected: string;
   desc: string;
   type: 'thai_flip' | 'typo_fix' | 'code_guard';
+  impactBadge: string;
+  impactDetail: string;
 }
 
 const DEMO_STEPS: DemoStep[] = [
-  { typed: 'cotoe.sh', expected: 'แนะนำให้', desc: 'เผลอพิมพ์ภาษาอังกฤษบนแป้นเกษมณี', type: 'thai_flip' },
-  { typed: ';yo', expected: 'สวัสดี', desc: 'ทักทายยอดนิยมที่ลืมเปลี่ยนภาษา', type: 'thai_flip' },
-  { typed: 'dkifu[bf;y;', expected: 'การทำงาน', desc: 'พิมพ์ยาวต่อเนื่องโดยไม่รู้ตัว', type: 'thai_flip' },
-  { typed: 'นะค่ะ', expected: 'นะคะ', desc: 'แก้ไขคำผิดภาษาไทยอัตโนมัติ', type: 'typo_fix' },
-  { typed: 'git push origin main', expected: 'git push origin main', desc: 'Code Guard ป้องกันคำสั่งโค้ดและ Git', type: 'code_guard' },
+  { 
+    typed: "l;ylfu[ =vrefi'kydy[.", 
+    expected: "สวัสดีครับ ขอปรึกษาครับ", 
+    desc: "แชตด่วนกับลูกค้า/ทีมโดยไม่มองจอ", 
+    type: "thai_flip",
+    impactBadge: "⚡ ประหยัด Backspace 23 ครั้ง (6 วินาที)",
+    impactDetail: "ไม่ต้องเสียจังหวะคิดหรือลบประโยคยาวพิมพ์ใหม่"
+  },
+  { 
+    typed: "cotoe.shlts5x5'wfhsoydy[.", 
+    expected: "แนะนำให้ใส่ถุงได้หน่อยครับ", 
+    desc: "ประโยคภาษาไทยต่อเนื่องแบบไม่เว้นวรรค", 
+    type: "thai_flip",
+    impactBadge: "🚀 รักษาสมาธิ (Flow State) ไม่ขาดตอน",
+    impactDetail: "CHA Engine ถอดรหัสคำไทยติดกันอย่างแม่นยำ"
+  },
+  { 
+    typed: "ขอบคุณนะค่ะ ที่ให้โอกาศ", 
+    expected: "ขอบคุณนะคะ ที่ให้โอกาส", 
+    desc: "ส่งอีเมลหรือเขียนเอกสารทางการ", 
+    type: "typo_fix",
+    impactBadge: "👔 เสริมภาพลักษณ์มืออาชีพ 100%",
+    impactDetail: "แก้คำผิดภาษาไทยที่คนมักสะกดผิดบ่อยโดยอัตโนมัติ"
+  },
+  { 
+    typed: "git push origin main --force", 
+    expected: "git push origin main --force", 
+    desc: "คำสั่ง Terminal ใน VS Code", 
+    type: "code_guard",
+    impactBadge: "🛡️ ปกป้อง Production Script 0% Error",
+    impactDetail: "Code Guard ตรวจจับ syntax โค้ด ไม่แปลงจนระบบพัง"
+  },
+  { 
+    typed: "dkifu[bf;y;0y'w,jruf[8njv", 
+    expected: "การทำงานยังไม่คืบหน้า", 
+    desc: "พิมพ์รายงานประชุมแบบรวดเร็ว", 
+    type: "thai_flip",
+    impactBadge: "⏱️ ประหยัดเวลากว่า 30 ชม. ต่อปี",
+    impactDetail: "พิมพ์รัวๆ ได้อย่างมั่นใจ ไม่ต้องคอยพะวงสลับภาษา"
+  },
 ];
 
 export const Hero3DFlipDemo: React.FC = () => {
@@ -314,23 +351,34 @@ export const Hero3DFlipDemo: React.FC = () => {
                       </span>
                     </div>
 
-                    {/* Status pill under display */}
-                    <div className="mt-4">
+                    {/* Status & Impact Badge under display */}
+                    <div className="mt-5 flex flex-col items-center gap-2">
                       {isFlipped ? (
                         <motion.div 
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-brand-100 text-brand-800 border border-brand-300/80"
+                          className="flex flex-col items-center gap-1.5"
                         >
-                          <span>✓ สลับภาษาและแปลงข้อความใน 0.4ms</span>
+                          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-1 rounded-full bg-brand-600 text-white shadow-sm shadow-brand-500/20">
+                            {currentStepData.impactBadge}
+                          </span>
+                          <span className="text-[11px] text-slate-500 font-medium">
+                            {currentStepData.impactDetail}
+                          </span>
                         </motion.div>
                       ) : currentStepData.type === 'code_guard' ? (
-                        <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-800 border border-blue-200">
-                          <span>✓ ละเว้นอัตโนมัติ ไม่แปลงโค้ดเสียหาย</span>
+                        <div className="flex flex-col items-center gap-1.5">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-1 rounded-full bg-blue-600 text-white shadow-sm shadow-blue-500/20">
+                            {currentStepData.impactBadge}
+                          </span>
+                          <span className="text-[11px] text-slate-500 font-medium">
+                            {currentStepData.impactDetail}
+                          </span>
                         </div>
                       ) : (
-                        <div className="text-xs text-slate-400 font-mono">
-                          กด Spacebar เพื่อพลิกคำ ➔
+                        <div className="text-xs text-slate-400 font-mono flex items-center gap-2">
+                          <span className="inline-block w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                          <span>กำลังพิมพ์... เคาะ Spacebar เพื่อพลิกคำ</span>
                         </div>
                       )}
                     </div>
@@ -455,12 +503,11 @@ export const Hero3DFlipDemo: React.FC = () => {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { key: 'cotoe.sh', label: 'cotoe.sh ➔ แนะนำให้' },
-                      { key: ';yo', label: ';yo ➔ สวัสดี' },
-                      { key: 'dkifu[bf;y;', label: 'dkifu[bf;y; ➔ การทำงาน' },
-                      { key: 'นะค่ะ', label: 'นะค่ะ ➔ นะคะ' },
-                      { key: 'teh', label: 'teh ➔ the' },
-                      { key: 'deploy.sh', label: 'deploy.sh (Code Guard)' },
+                      { key: "l;ylfu[ =vrefi'kydy[.", label: "l;ylfu[ ➔ สวัสดีครับ ขอปรึกษาครับ (แชตด่วน)" },
+                      { key: "ขอบคุณนะค่ะ ที่ให้โอกาศ", label: "ขอบคุณนะค่ะ ➔ ขอบคุณนะคะ ที่ให้โอกาส (ภาพลักษณ์มืออาชีพ)" },
+                      { key: "cotoe.shlts5x5'wfhsoydy[.", label: "cotoe.sh... ➔ แนะนำให้ใส่ถุง... (คำติดกัน)" },
+                      { key: "dkifu[bf;y;0y'w,jruf[8njv", label: "dkifu[... ➔ การทำงานยังไม่คืบหน้า (รายงานงาน)" },
+                      { key: "git push origin main --force", label: "git push... (Code Guard ป้องกัน CLI)" },
                     ].map((preset) => (
                       <button
                         key={preset.key}
