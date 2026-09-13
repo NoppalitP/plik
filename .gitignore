@@ -35,3 +35,11 @@ smart_keyboard.log
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Node / Web Frontend
+node_modules/
+website/node_modules/
+website/dist/
+package-lock.json
+website/package-lock.json
+
