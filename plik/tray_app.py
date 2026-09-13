@@ -41,12 +41,10 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 
 sys.excepthook = handle_exception
 
-from PIL import Image, ImageDraw, ImageFont
-import pystray
-from pystray import MenuItem as item
-
-from plik.live_service import LiveKeyboardService
-from plik.storage import SettingsManager
+# GUI-heavy imports (pystray, PIL, LiveKeyboardService) are deferred to the
+# functions that actually need them so that lightweight helpers like
+# SingleInstanceMutex and get_asset_path remain importable on headless CI
+# runners that lack a desktop session.
 
 ERROR_ALREADY_EXISTS = 183
 
@@ -85,8 +83,10 @@ def get_asset_path(filename: str) -> str:
     return os.path.join(base, "assets", filename)
 
 
-def create_tray_icon(is_active: bool = True) -> Image.Image:
+def create_tray_icon(is_active: bool = True):
     """Generates or loads a sleek high-res icon for the system tray."""
+    from PIL import Image, ImageDraw
+
     ico_name = "app_icon.png" if is_active else "app_icon_paused.png"
     ico_path = get_asset_path(ico_name)
     if not os.path.exists(ico_path):
@@ -111,6 +111,10 @@ def create_tray_icon(is_active: bool = True) -> Image.Image:
 
 class PlikTrayApp:
     def __init__(self):
+        import pystray  # noqa: F811 — lazy import for headless CI compat
+        from plik.live_service import LiveKeyboardService
+        from plik.storage import SettingsManager
+
         log_event("Initializing PlikTrayApp...")
         self.settings_mgr = SettingsManager.get_instance()
         saved = self.settings_mgr.settings
@@ -239,6 +243,9 @@ class PlikTrayApp:
             self.icon.stop()
 
     def run(self):
+        import pystray
+        from pystray import MenuItem as item
+
         log_event("Starting background keyboard service thread...")
         self._service_thread = threading.Thread(target=self.service.start, daemon=True)
         self._service_thread.start()

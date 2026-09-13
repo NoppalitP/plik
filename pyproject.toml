@@ -51,9 +51,9 @@ dev = [
 plik = "plik.tray_app:main"
 
 [project.urls]
-Homepage = "https://github.com/plik-app/plik"
-Documentation = "https://github.com/plik-app/plik#readme"
-Issues = "https://github.com/plik-app/plik/issues"
+Homepage = "https://github.com/NoppalitP/plik"
+Documentation = "https://github.com/NoppalitP/plik#readme"
+Issues = "https://github.com/NoppalitP/plik/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
