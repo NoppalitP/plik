@@ -353,6 +353,7 @@ class LiveKeyboardService:
                                     self.engine.set_layout("EN")
 
                             act = self.engine.process_key(char, is_backspace=False, active_process=active_proc)
+                            log_event(f"[KEY] char={repr(char)}, act={act.action_type}, rsn={repr(act.reason)}, tok={repr(self.engine._current_token)}, lay={self.engine.current_layout}")
 
                             if act.action_type == "AUTO_SWITCH":
                                 try:
@@ -394,7 +395,7 @@ class LiveKeyboardService:
                                 )
 
                                 def do_replace():
-                                    time.sleep(0.015)
+                                    time.sleep(0.035)
                                     self.platform.replace_text_atomic(orig_len, repl)
                                     try:
                                         self.platform.switch_layout(tgt, hwnd=active_hwnd)

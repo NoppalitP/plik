@@ -10,13 +10,13 @@ def test_core_engine_auto_switch():
     engine = CoreEngine()
     engine.set_layout("EN")
 
-    # Type 'd', ';', 'y'
-    engine.process_key("d", active_process="chrome.exe")
+    # Type ';', 'y', 'o' -> 'วัน' (valid 3-char Thai word with semicolon)
     engine.process_key(";", active_process="chrome.exe")
-    act = engine.process_key("y", active_process="chrome.exe")
+    engine.process_key("y", active_process="chrome.exe")
+    act = engine.process_key("o", active_process="chrome.exe")
 
     assert act.action_type == "AUTO_SWITCH"
-    assert act.replacement_text == "กวั"
+    assert act.replacement_text == "วัน"
     assert act.target_layout == "TH"
     assert engine.current_layout == "TH"
 

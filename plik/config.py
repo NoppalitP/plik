@@ -32,6 +32,9 @@ class SwitcherConfig:
     # Enable sound alert when auto-switching language
     enable_sound_alert: bool = True
 
+    # Delimiter-only switching (Space/Enter) like RightLang to prevent mid-word chopping
+    switch_on_delimiter_only: bool = False
+
     # Hotkey for manual conversion of previous word
     manual_convert_hotkey: str = "pause"  # e.g., 'pause', 'shift+space'
 

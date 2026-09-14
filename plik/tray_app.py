@@ -130,6 +130,7 @@ class PlikTrayApp:
         self.service.config.enable_thai_autocorrect = saved.enable_thai_autocorrect
         self.service.config.enable_eng_autocorrect = saved.enable_eng_autocorrect
         self.service.config.enable_sound_alert = getattr(saved, "enable_sound_alert", True)
+        self.service.config.switch_on_delimiter_only = getattr(saved, "switch_on_delimiter_only", True)
         self._is_paused = saved.is_paused
 
         self.icon: Optional[pystray.Icon] = None
@@ -189,6 +190,29 @@ class PlikTrayApp:
         self.settings_mgr.save()
         status_msg = "เปิดเสียงแจ้งเตือนแล้ว (Sound Alert Enabled)" if enabled else "ปิดเสียงแจ้งเตือนแล้ว (Sound Alert Disabled)"
         log_event(f"[SOUND_ALERT] {status_msg}")
+        if self.icon:
+            try:
+                self.icon.notify(status_msg, "Plik (พลิก)")
+            except Exception:
+                pass
+
+    def is_delimiter_only_enabled(self) -> bool:
+        """Returns whether delimiter-only switching (RightLang mode) is currently enabled."""
+        return getattr(self.service.config, "switch_on_delimiter_only", True)
+
+    def toggle_delimiter_only(self, icon=None, item=None):
+        """Toggles between delimiter-only switching and continuous in-flight switching."""
+        curr = getattr(self.service.config, "switch_on_delimiter_only", True)
+        new_val = not curr
+        self.service.config.switch_on_delimiter_only = new_val
+        self.settings_mgr.settings.switch_on_delimiter_only = new_val
+        self.settings_mgr.save()
+        status_msg = (
+            "สลับคำเมื่อเคาะ Spacebar เท่านั้น (โหมดเสถียรแบบ RightLang)"
+            if new_val
+            else "สลับคำแบบทันทีระหว่างพิมพ์ (In-Flight Mode)"
+        )
+        log_event(f"[DELIMITER_MODE] {status_msg}")
         if self.icon:
             try:
                 self.icon.notify(status_msg, "Plik (พลิก)")
@@ -286,6 +310,11 @@ class PlikTrayApp:
                 "🔔 เสียงแจ้งเตือนเมื่อพลิกคำ (Sound Alert)",
                 self.toggle_sound_alert,
                 checked=lambda item: self.is_sound_alert_enabled(),
+            ),
+            item(
+                "⚡ สลับเมื่อเคาะ Spacebar (โหมดเสถียรแบบ RightLang)",
+                self.toggle_delimiter_only,
+                checked=lambda item: self.is_delimiter_only_enabled(),
             ),
             item("🚫 ปิด RightLang ที่รันอยู่", self.close_rightlang),
             item(

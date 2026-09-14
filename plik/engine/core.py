@@ -167,16 +167,17 @@ class CoreEngine:
         if len(self._current_token) > self.config.max_buffer_length:
             self._current_token = self._current_token[-self.config.max_buffer_length :]
 
-        # Continuous evaluation if token length meets threshold
-        if len(self._current_token) >= self.config.min_word_length:
-            is_start = (self._chars_since_delimiter <= len(self._current_token))
-            return self._evaluate_token(
-                self._current_token,
-                active_process,
-                in_flight=True,
-                is_word_start=is_start,
-                is_delimiter=False,
-            )
+        # Continuous evaluation if token length meets threshold and not in delimiter-only mode
+        if not getattr(self.config, "switch_on_delimiter_only", True):
+            if len(self._current_token) >= self.config.min_word_length:
+                is_start = (self._chars_since_delimiter <= len(self._current_token))
+                return self._evaluate_token(
+                    self._current_token,
+                    active_process,
+                    in_flight=True,
+                    is_word_start=is_start,
+                    is_delimiter=False,
+                )
 
         return SwitchAction(action_type="NONE")
 
@@ -270,7 +271,7 @@ class CoreEngine:
 
         # Tier 0: 511,076-word Lexicon Matcher (Fast O(1) Dictionary Lookup)
         lex_target, lex_conf, lex_reason = self.lexicon.evaluate(
-            token, self._current_layout, is_delimiter=is_delimiter
+            token, self._current_layout, is_delimiter=is_delimiter, is_dev=is_dev
         )
         if lex_target == "KEEP":
             return SwitchAction(action_type="NONE", reason=lex_reason)
@@ -306,6 +307,9 @@ class CoreEngine:
 
         if rule_verdict == "SWITCH_TO_EN" and self._current_layout == "TH":
             converted = to_english(token)
+            # In-flight guard: Never switch mid-word unless converted text is an actual English word
+            if in_flight and not self.lexicon.is_english_word(converted):
+                return SwitchAction(action_type="NONE")
             self._record_conversion(token, converted, "TH", "EN")
             self._current_layout = "EN"
             if in_flight:
@@ -322,6 +326,9 @@ class CoreEngine:
             )
         elif rule_verdict == "SWITCH_TO_TH" and self._current_layout == "EN":
             converted = to_thai(token)
+            # In-flight guard: Never switch mid-word unless converted text is an actual Thai word/phrase
+            if in_flight and not (self.lexicon.is_thai_word(converted) or self.lexicon.can_segment_thai(converted)):
+                return SwitchAction(action_type="NONE")
             self._record_conversion(token, converted, "EN", "TH")
             self._current_layout = "TH"
             self._current_token = ""
@@ -343,6 +350,12 @@ class CoreEngine:
         if target_layout != "KEEP" and target_layout != self._current_layout:
             if confidence >= self.config.auto_switch_threshold:
                 converted = to_thai(token) if target_layout == "TH" else to_english(token)
+                # In-flight guard: Never switch mid-word unless converted text is an actual word/phrase
+                if in_flight:
+                    if target_layout == "TH" and not (self.lexicon.is_thai_word(converted) or self.lexicon.can_segment_thai(converted)):
+                        return SwitchAction(action_type="NONE")
+                    if target_layout == "EN" and not self.lexicon.is_english_word(converted):
+                        return SwitchAction(action_type="NONE")
                 self._record_conversion(token, converted, self._current_layout, target_layout)
                 self._current_layout = target_layout
                 if target_layout == "TH":

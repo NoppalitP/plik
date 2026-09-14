@@ -249,8 +249,8 @@ class WindowsPlatform:
             n_bs = len(bs_inputs)
             arr_bs = (INPUT * n_bs)(*bs_inputs)
             self._user32.SendInput(n_bs, ctypes.byref(arr_bs), ctypes.sizeof(INPUT))
-            # Micro-pause allows target app message queue to process deletions before insertions
-            time.sleep(0.005)
+            # Pause allows target app message queue (Direct2D RichEdit) to process deletions before insertions
+            time.sleep(0.025)
 
         # 2. Unicode characters for replacement
         char_inputs = []

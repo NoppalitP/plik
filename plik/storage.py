@@ -17,6 +17,7 @@ class AppSettings:
     enable_thai_autocorrect: bool = True
     enable_eng_autocorrect: bool = True
     enable_sound_alert: bool = True
+    switch_on_delimiter_only: bool = True
 
 
 class SettingsManager:
@@ -63,6 +64,7 @@ class SettingsManager:
                 enable_thai_autocorrect=bool(data.get("enable_thai_autocorrect", True)),
                 enable_eng_autocorrect=bool(data.get("enable_eng_autocorrect", True)),
                 enable_sound_alert=bool(data.get("enable_sound_alert", True)),
+                switch_on_delimiter_only=bool(data.get("switch_on_delimiter_only", True)),
             )
         except Exception:
             return AppSettings()
