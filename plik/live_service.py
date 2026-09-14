@@ -297,6 +297,7 @@ class LiveKeyboardService:
 
                 if not self._is_paused:
                     active_proc = self.get_active_process_name()
+                    active_hwnd = self.user32.GetForegroundWindow() if self.user32 else 0
 
                     if vk == VK_BACK:
                         # Handle Backspace for Instant Undo
@@ -316,7 +317,10 @@ class LiveKeyboardService:
                                     pass
                             # Perform undo: delete replaced word, re-type original, switch layout
                             self.platform.replace_text_atomic(len(act.original_text), act.replacement_text)
-                            self.platform.switch_layout(act.target_layout)
+                            try:
+                                self.platform.switch_layout(act.target_layout, hwnd=active_hwnd)
+                            except TypeError:
+                                self.platform.switch_layout(act.target_layout)
                             return 1  # Suppress the raw backspace since we handled the replacement
 
                     elif vk in (0x25, 0x26, 0x27, 0x28, 0x2E, 0x1B):  # Arrow keys, Delete, Escape
@@ -379,7 +383,10 @@ class LiveKeyboardService:
                                 def do_replace():
                                     time.sleep(0.015)
                                     self.platform.replace_text_atomic(orig_len, repl)
-                                    self.platform.switch_layout(tgt)
+                                    try:
+                                        self.platform.switch_layout(tgt, hwnd=active_hwnd)
+                                    except TypeError:
+                                        self.platform.switch_layout(tgt)
 
                                 threading.Thread(target=do_replace, daemon=True).start()
                                 return self.user32.CallNextHookEx(self._hook, nCode, wParam, lParam)

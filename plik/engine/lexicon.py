@@ -44,6 +44,16 @@ MATCHING_BRACKETS = {
     "'": "'",
 }
 
+COMMON_ENGLISH_CONTRACTIONS = {
+    "it's", "don't", "can't", "won't", "i'm", "you're", "we're", "they're",
+    "he's", "she's", "that's", "what's", "where's", "when's", "why's", "how's",
+    "who's", "there's", "here's", "let's", "didn't", "doesn't", "isn't",
+    "aren't", "wasn't", "weren't", "haven't", "hasn't", "hadn't", "couldn't",
+    "shouldn't", "wouldn't", "i've", "you've", "we've", "they've", "i'll",
+    "you'll", "he'll", "she'll", "we'll", "they'll", "i'd", "you'd", "he'd",
+    "she'd", "we'd", "they'd", "ain't", "ma'am", "o'clock"
+}
+
 
 def has_unclosed_bracket(text: str) -> bool:
     """Check if text starts with an opening bracket that is not yet closed."""
@@ -99,8 +109,23 @@ class LexiconMatcher:
         self._loaded = bool(self.eng_words or self.thai_words)
 
     def is_english_word(self, word: str) -> bool:
-        """Check if a token exists in the English dictionary."""
-        return word.lower().strip() in self.eng_words
+        """Check if a token exists in the English dictionary or standard contractions."""
+        w = word.lower().strip()
+        if not w:
+            return False
+        if w in self.eng_words or w in COMMON_ENGLISH_CONTRACTIONS:
+            return True
+        if w.endswith("'s") and (w[:-2] in self.eng_words or w[:-2] in COMMON_ENGLISH_CONTRACTIONS):
+            return True
+        if w.endswith("'t") and w[:-2] in self.eng_words:
+            return True
+        if w.endswith("'"):
+            # Plural possessive like users', students'
+            return w[:-1] in self.eng_words and w[:-1].endswith("s")
+        if w.replace("'", "") in self.eng_words:
+            # Must have letters after the apostrophe, e.g. don't, it's, we've
+            return "'" in w and not w.startswith("'") and not w.endswith("'")
+        return False
 
     def is_thai_word(self, word: str) -> bool:
         """Check if a token exists in the Thai dictionary."""

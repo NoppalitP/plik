@@ -107,6 +107,15 @@ def is_impossible_english(text: str) -> Tuple[bool, str]:
     if len(text_lower) == 3 and text_lower in VALID_EN_INITIAL_CLUSTERS:
         return False, ""
 
+    # If it's a known valid English contraction or abbreviation, don't flag as impossible
+    from plik.engine.lexicon import COMMON_ENGLISH_CONTRACTIONS
+    if text_lower in COMMON_ENGLISH_CONTRACTIONS:
+        return False, ""
+    if "'" in text_lower:
+        # Check standard possessive (e.g. today's, user's) or contraction
+        if text_lower.endswith("'s") or text_lower.endswith("'t") or text_lower.endswith("'re") or text_lower.endswith("'ve") or text_lower.endswith("'ll") or text_lower.endswith("'d") or text_lower.endswith("'m"):
+            return False, ""
+
     # Rule E1: Brackets or semicolons anywhere in a word with letters/digits
     # e.g., 'd;y', 'c[[', 'l;ylfu', '8y[', ']yf;', '8yf;', '[=k'
     has_bracket = "[" in text or "]" in text
@@ -116,13 +125,13 @@ def is_impossible_english(text: str) -> Tuple[bool, str]:
     if (has_bracket or has_semicolon) and has_alpha_or_num:
         return True, f"Bracket or semicolon in word: '{text}'"
 
-    # Rule E2: Kedmanee punctuation (', /) in the middle of alphabetic letters (NOT hyphens, which are common in English!)
+    # Rule E2: Kedmanee punctuation (/) in the middle of alphabetic letters (NOT apostrophes or hyphens)
     for i in range(1, len(text) - 1):
-        if text[i] in {"'", "/"}:
+        if text[i] == "/":
             prev_alpha = text[i - 1].isalpha()
             next_alpha = text[i + 1].isalpha()
             if prev_alpha and next_alpha:
-                return True, f"Kedmanee punctuation within letters: '{text}'"
+                return True, f"Kedmanee slash within letters: '{text}'"
 
     # Rule E3: Consonants with zero English vowels
     letters = [c for c in text if c.isalpha()]

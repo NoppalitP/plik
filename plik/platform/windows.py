@@ -135,17 +135,17 @@ class WindowsPlatform:
         except Exception:
             return "EN"
 
-    def switch_layout(self, target: str) -> bool:
+    def switch_layout(self, target: str, hwnd: Optional[int] = None) -> bool:
         """Switch active window layout to 'TH' or 'EN' with thread attachment."""
         if not self._is_win32:
             return True
 
         try:
-            hwnd_focus = self.get_focused_window()
-            hwnd_fore = self._user32.GetForegroundWindow()
-            target_hwnd = hwnd_focus or hwnd_fore
+            target_hwnd = hwnd or self.get_focused_window() or (self._user32.GetForegroundWindow() if self._user32 else 0)
             if not target_hwnd:
                 return False
+            hwnd_focus = self.get_focused_window() or target_hwnd
+            hwnd_fore = (self._user32.GetForegroundWindow() if self._user32 else 0) or target_hwnd
 
             target_tid = self._user32.GetWindowThreadProcessId(target_hwnd, None)
             current_tid = self._kernel32.GetCurrentThreadId()

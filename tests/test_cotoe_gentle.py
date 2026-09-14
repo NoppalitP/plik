@@ -58,3 +58,38 @@ def test_thai_words_ending_in_hai_not_blocked_by_syntax_guard():
     assert sg.is_protected_syntax('cotoe.sh')[0] is False  # แนะนำให้
     assert sg.is_protected_syntax('g-hk.sh')[0] is False   # เข้าให้
     assert sg.is_protected_syntax('.sh')[0] is False       # ให้
+
+
+def test_its_and_contractions_preserve_english():
+    """Verify English contractions like it's, don't, can't never falsely convert to Thai."""
+    engine = CoreEngine()
+    engine.set_layout('EN')
+
+    for word in ["it's", "don't", "can't", "i'm", "you're", "they're", "that's"]:
+        engine.set_layout('EN')
+        for ch in word:
+            act = engine.process_key(ch, active_process="notepad.exe")
+            assert act.action_type == "NONE", f"Word '{word}' falsely triggered on '{ch}': {act.reason}"
+        # Delimiter check
+        act_delim = engine.process_key(" ", active_process="notepad.exe")
+        assert act_delim.action_type == "NONE", f"Word '{word}' falsely converted on space: {act_delim.reason}"
+
+
+def test_thai_kedmanee_contractions_convert_to_english():
+    """Verify Thai mistyped contractions (e.g. ระงห -> it's) convert cleanly to English."""
+    engine = CoreEngine()
+    engine.set_layout('TH')
+
+    # 'ระงห' maps to "it's"
+    act = engine._evaluate_token('ระงห', is_delimiter=True, delimiter_char=' ')
+    assert act.action_type == 'AUTO_SWITCH'
+    assert act.replacement_text == "it's"
+    assert act.target_layout == 'EN'
+
+    # 'กนืงะ' maps to "don't"
+    engine.set_layout('TH')
+    act_dont = engine._evaluate_token('กนืงะ', is_delimiter=True, delimiter_char=' ')
+    assert act_dont.action_type == 'AUTO_SWITCH'
+    assert act_dont.replacement_text == "don't"
+    assert act_dont.target_layout == 'EN'
+
