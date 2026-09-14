@@ -11,12 +11,28 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/NoppalitP/plik/actions"><img src="https://img.shields.io/github/actions/workflow/status/NoppalitP/plik/test.yml?branch=main&style=flat-square&label=tests" alt="Tests" /></a>
-  <a href="https://github.com/NoppalitP/plik/releases"><img src="https://img.shields.io/github/v/release/NoppalitP/plik?style=flat-square&color=059669" alt="Release" /></a>
+  <a href="https://github.com/NoppalitP/plik/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/NoppalitP/plik/test.yml?branch=main&style=flat-square&label=tests&logo=github" alt="Tests" /></a>
+  <a href="https://noppalitp.github.io/plik/"><img src="https://img.shields.io/badge/website-live%20demo-059669?style=flat-square&logo=googlechrome&logoColor=white" alt="Live Website" /></a>
+  <a href="https://github.com/NoppalitP/plik/releases"><img src="https://img.shields.io/github/v/release/NoppalitP/plik?style=flat-square&color=059669&label=version" alt="Release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" /></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square" alt="Python Version" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/security-100%25%20Offline-success?style=flat-square" alt="Offline Security" /></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python Version" /></a>
+  <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-100%25%20Offline-success?style=flat-square" alt="Offline Security" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Platform" /></a>
 </p>
+
+---
+
+## 📑 Table of Contents (สารบัญ)
+
+* [⚡ Highlights (จุดเด่น)](#-highlights-จุดเด่น)
+* [💡 Real-World Impact (ตัวอย่างสถานการณ์จริง)](#-real-world-impact-ตัวอย่างสถานการณ์จริงที่สร้างความแตกต่าง)
+* [⚖️ Comparison (ตารางเปรียบเทียบ)](#️-comparison-ตารางเปรียบเทียบกับเครื่องมืออื่น)
+* [📥 Download & Installation (การติดตั้ง)](#-download--installation-ดาวน์โหลดและติดตั้ง)
+* [🎮 Controls & Shortcuts (การควบคุม)](#-controls--shortcuts-การควบคุมและปุ่มลัด)
+* [🏗️ Architecture Overview (สถาปัตยกรรม)](#️-architecture-overview)
+* [💻 Development & Building from Source](#-development--building-from-source)
+* [🤝 Community & Contributing](#-community--contributing)
+* [📄 License](#-license)
 
 ---
 
@@ -145,6 +161,17 @@ pyinstaller --clean -y Plik.spec
 # Compile Inno Setup Installer (requires Inno Setup 6+)
 & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\Plik_Setup.iss
 ```
+
+---
+
+## 🤝 Community & Contributing
+
+เรายินดีต้อนรับการมีส่วนร่วมพัฒนาจากชุมชนทุกท่าน! โปรดอ่านเอกสารแนวทางปฏิบัติต่อไปนี้:
+
+* 📖 **[Contributing Guidelines](CONTRIBUTING.md)**: แนวทางการพัฒนา ติดตั้งสภาพแวดล้อม และการรันชุดทดสอบ
+* 🔒 **[Security Policy](SECURITY.md)**: คำมั่นสัญญาด้านความปลอดภัย 100% Offline และช่องทางการรายงานช่องโหว่
+* 📜 **[Code of Conduct](CODE_OF_CONDUCT.md)**: มาตรฐานพฤติกรรมและการอยู่ร่วมกันในชุมชน
+* 📋 **[Changelog](CHANGELOG.md)**: บันทึกประวัติการเปลี่ยนแปลงในแต่ละเวอร์ชัน
 
 ---
 

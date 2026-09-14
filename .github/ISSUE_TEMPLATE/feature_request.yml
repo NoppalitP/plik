@@ -1,0 +1,27 @@
+name: 💡 Feature Request / Word Suggestion
+description: เสนอแนะฟีเจอร์ใหม่ หรือขอเพิ่มคำศัพท์/คำผิดที่พบบ่อย
+title: '[FEATURE]: '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ยินดีต้อนรับข้อเสนอแนะทุกรูปแบบ! ไม่ว่าจะเป็นฟีเจอร์ใหม่ หรือคำศัพท์ภาษาไทย-อังกฤษที่อยากให้ระบบรองรับ
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: ประเภทข้อเสนอแนะ
+      options:
+        - เสนอคำศัพท์ใหม่ใน Dictionary (New Vocabulary)
+        - เสนอคู่คำผิดที่พบบ่อย (New Typo Auto-Correct Pair)
+        - ฟีเจอร์ใหม่ในโปรแกรม (New Feature / UX Improvement)
+        - ปรับปรุงประสิทธิภาพ (Performance / Accuracy)
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: รายละเอียดข้อเสนอแนะ (Description)
+      placeholder: อธิบายรายละเอียด ข้อดี และตัวอย่างการใช้งาน
+    validations:
+      required: true

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🌐 Plik Official Website
+    url: https://noppalitp.github.io/plik/
+    about: ศึกษาข้อมูลฟีเจอร์และทดลองเล่น Interactive Playground
+  - name: 💬 GitHub Discussions
+    url: https://github.com/NoppalitP/plik/discussions
+    about: พูดคุย แลกเปลี่ยนความคิดเห็น หรือสอบถามการใช้งานทั่วไป

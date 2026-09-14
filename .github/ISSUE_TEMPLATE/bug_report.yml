@@ -1,0 +1,49 @@
+name: 🐛 Bug Report
+description: รายงานข้อผิดพลาดหรือปัญหาการใช้งาน Plik
+title: '[BUG]: '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ขอบคุณสำหรับการรายงานปัญหา! โปรดกรอกข้อมูลให้ครบถ้วนเพื่อช่วยให้เราตรวจสอบและแก้ไขได้รวดเร็วขึ้น
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: ปัญหาที่พบ (What happened?)
+      description: อธิบายสิ่งที่เกิดขึ้น และคำที่พิมพ์ผิด/สลับผิด
+      placeholder: เช่น พิมพ์คำว่า '...' ในโปรแกรม '...' แล้วระบบไม่ยอมสลับภาษา หรือสลับผิดเป็น '...'
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: ผลลัพธ์ที่คาดหวัง (Expected Behavior)
+      description: สิ่งที่ควรจะเกิดขึ้นอย่างถูกต้อง
+      placeholder: เช่น ควรจะแปลงคำเป็น '...'
+    validations:
+      required: true
+  - type: dropdown
+    id: windows-version
+    attributes:
+      label: รุ่นของ Windows ที่ใช้งาน
+      options:
+        - Windows 11 (23H2 / 24H2)
+        - Windows 11 (รุ่นก่อนหน้า)
+        - Windows 10 (22H2)
+        - อื่นๆ
+    validations:
+      required: true
+  - type: input
+    id: plik-version
+    attributes:
+      label: เวอร์ชันของ Plik
+      placeholder: เช่น v1.0.0 หรือ build ล่าสุด
+    validations:
+      required: true
+  - type: textarea
+    id: log-output
+    attributes:
+      label: Log เพิ่มเติม (ถ้ามี)
+      description: คัดลอกข้อความจาก %USERPROFILE%\plik.log หากมีข้อผิดพลาด
+      render: shell
