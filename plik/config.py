@@ -29,6 +29,9 @@ class SwitcherConfig:
     enable_thai_autocorrect: bool = True
     enable_eng_autocorrect: bool = True
 
+    # Enable sound alert when auto-switching language
+    enable_sound_alert: bool = True
+
     # Hotkey for manual conversion of previous word
     manual_convert_hotkey: str = "pause"  # e.g., 'pause', 'shift+space'
 

@@ -203,6 +203,19 @@ class LiveKeyboardService:
         self.config.enable_autocorrect = not self.config.enable_autocorrect
         return self.config.enable_autocorrect
 
+    def toggle_sound_alert(self) -> bool:
+        """Toggles the sound alert feature on or off."""
+        self.config.enable_sound_alert = not getattr(self.config, "enable_sound_alert", True)
+        return self.config.enable_sound_alert
+
+    def _play_switch_sound(self) -> None:
+        """Plays a subtle non-blocking audio chime upon successful automatic conversion."""
+        try:
+            import winsound
+            winsound.MessageBeep(winsound.MB_ICONASTERISK)
+        except Exception:
+            pass
+
     def get_active_process_name(self) -> str:
         """Resolves the executable name of the current foreground window."""
         try:
@@ -387,6 +400,8 @@ class LiveKeyboardService:
                                         self.platform.switch_layout(tgt, hwnd=active_hwnd)
                                     except TypeError:
                                         self.platform.switch_layout(tgt)
+                                    if getattr(self.config, "enable_sound_alert", True):
+                                        self._play_switch_sound()
 
                                 threading.Thread(target=do_replace, daemon=True).start()
                                 return self.user32.CallNextHookEx(self._hook, nCode, wParam, lParam)

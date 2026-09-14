@@ -16,6 +16,7 @@ class AppSettings:
     enable_autocorrect: bool = True
     enable_thai_autocorrect: bool = True
     enable_eng_autocorrect: bool = True
+    enable_sound_alert: bool = True
 
 
 class SettingsManager:
@@ -61,6 +62,7 @@ class SettingsManager:
                 enable_autocorrect=bool(data.get("enable_autocorrect", True)),
                 enable_thai_autocorrect=bool(data.get("enable_thai_autocorrect", True)),
                 enable_eng_autocorrect=bool(data.get("enable_eng_autocorrect", True)),
+                enable_sound_alert=bool(data.get("enable_sound_alert", True)),
             )
         except Exception:
             return AppSettings()

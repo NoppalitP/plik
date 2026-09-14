@@ -129,6 +129,7 @@ class PlikTrayApp:
         self.service.config.enable_autocorrect = saved.enable_autocorrect
         self.service.config.enable_thai_autocorrect = saved.enable_thai_autocorrect
         self.service.config.enable_eng_autocorrect = saved.enable_eng_autocorrect
+        self.service.config.enable_sound_alert = getattr(saved, "enable_sound_alert", True)
         self._is_paused = saved.is_paused
 
         self.icon: Optional[pystray.Icon] = None
@@ -171,6 +172,23 @@ class PlikTrayApp:
         self.settings_mgr.save()
         status_msg = "เปิดระบบแก้คำผิดแล้ว (Auto-Correct Enabled)" if enabled else "ปิดระบบแก้คำผิดแล้ว (Auto-Correct Disabled)"
         log_event(f"[AUTOCORRECT] {status_msg}")
+        if self.icon:
+            try:
+                self.icon.notify(status_msg, "Plik (พลิก)")
+            except Exception:
+                pass
+
+    def is_sound_alert_enabled(self) -> bool:
+        """Returns whether sound alert is currently enabled."""
+        return getattr(self.service.config, "enable_sound_alert", True)
+
+    def toggle_sound_alert(self, icon=None, item=None):
+        """Toggles sound alert on or off."""
+        enabled = self.service.toggle_sound_alert()
+        self.settings_mgr.settings.enable_sound_alert = enabled
+        self.settings_mgr.save()
+        status_msg = "เปิดเสียงแจ้งเตือนแล้ว (Sound Alert Enabled)" if enabled else "ปิดเสียงแจ้งเตือนแล้ว (Sound Alert Disabled)"
+        log_event(f"[SOUND_ALERT] {status_msg}")
         if self.icon:
             try:
                 self.icon.notify(status_msg, "Plik (พลิก)")
@@ -263,6 +281,11 @@ class PlikTrayApp:
                 "✨ แก้คำผิดอัตโนมัติ (Auto-Correct)",
                 self.toggle_autocorrect,
                 checked=lambda item: self.is_autocorrect_enabled(),
+            ),
+            item(
+                "🔔 เสียงแจ้งเตือนเมื่อพลิกคำ (Sound Alert)",
+                self.toggle_sound_alert,
+                checked=lambda item: self.is_sound_alert_enabled(),
             ),
             item("🚫 ปิด RightLang ที่รันอยู่", self.close_rightlang),
             item(
