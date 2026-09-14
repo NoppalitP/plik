@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-    { name = "Plik Software Team", email = "dev@plik.io" }
+    { name = "Noppalit Posritat", email = "noppalitposritat@gmail.com" }
 ]
 keywords = [
     "keyboard",

@@ -6,7 +6,8 @@
 
 <p align="center">
   <strong>Intelligent Thai-English Keyboard Switcher & Auto-Corrector for Windows</strong><br>
-  <em>พลิกภาษา พลิกคำผิด ในพริบตา</em>
+  <em>พลิกภาษา พลิกคำผิด ในพริบตา</em><br>
+  <a href="https://noppalitp.github.io/plik/"><strong>🌐 เว็บไซต์ทางการ (Official Website)</strong></a>
 </p>
 
 <p align="center">
